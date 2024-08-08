@@ -11,6 +11,13 @@ class MLModels(str, Enum):
 
 
 app = FastAPI()
+fake_db = [
+    {"een": "ween"},
+    {"un": 1},
+    {"twee": 2},
+    {"deux": "farkus"},
+    {"drie": "vorst"},
+]
 
 
 @app.get("/")
@@ -49,3 +56,8 @@ async def upload(file_path: str):
     if file_path.endswith("pdf"):
         return {"uploaded_to": file_path}
     return {"invalid_path": file_path}
+
+
+@app.get("/fakedb/")
+async def fakedb(skip: int = 0, limit: int = 10):
+    return fake_db[skip: skip + limit]
