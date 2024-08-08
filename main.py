@@ -42,3 +42,10 @@ async def get_mlmodel(name: MLModels):
         message = "LeCNN"
 
     return {"mlmodel": name, "message": message}
+
+
+@app.get("/uploads/{file_path:path}")
+async def upload(file_path: str):
+    if file_path.endswith("pdf"):
+        return {"uploaded_to": file_path}
+    return {"invalid_path": file_path}
