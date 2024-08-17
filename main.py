@@ -2,6 +2,7 @@
 from enum import Enum
 
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 
 class MLModels(str, Enum):
@@ -10,7 +11,15 @@ class MLModels(str, Enum):
     twee = "lenet"
 
 
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+
+
 app = FastAPI()
+
 fake_db = [
     {"een": "ween"},
     {"un": 1},
@@ -61,3 +70,12 @@ async def upload(file_path: str):
 @app.get("/fakedb/")
 async def fakedb(skip: int = 0, limit: int = 10):
     return fake_db[skip: skip + limit]
+
+
+@app.post("/items/")
+async def create_item(item: Item):
+    item_dict = item.dict()
+    if item.tax:
+        price_with_tax = item.price + (item.price * (item.tax/100))
+        item_dict.update({"price_with_tax": price_with_tax})
+    return item_dict
