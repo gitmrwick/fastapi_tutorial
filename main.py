@@ -91,5 +91,24 @@ async def create_item(item: Item):
 
 
 @app.put("/items/{item_id}")
-async def update_item(item_id: int, item: Item):
+async def update_with_path(item_id: int, item: Item):
     return {"item_id": item_id, **item.dict()}
+
+
+@app.put("/itemsq/{item_id}")
+async def update_with_path_plus_query(
+    item_id: int,
+    item: Item,
+    q: str | None = None,
+):
+    """
+    test with
+    http -j put \
+        http://127.0.0.1:[port]/itemsq/66 \
+        q=="bonjour=dag&bonsoir=salut" \
+        name=six price=6 tax=6.5
+    """
+    result = {"item_id": item_id, **item.dict()}
+    if q:
+        result.update({"query_params": q})
+    return result
