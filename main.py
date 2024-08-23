@@ -1,7 +1,9 @@
 """ first fastapi tutorial """
 from enum import Enum
+from typing import Annotated
 
 from fastapi import FastAPI
+from fastapi import Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -43,7 +45,7 @@ async def favicon():
     return FileResponse("./static/favicon.ico")
 
 
-@app.get("/{item}")
+@app.get("/i/{item}")
 async def get1(item):
     return {"item": item}
 
@@ -112,3 +114,24 @@ async def update_with_path_plus_query(
     if q:
         result.update({"query_params": q})
     return result
+
+
+@app.get("/stuff")
+async def get_stuff(
+    bonjour: str | None = "Dag",
+    trois: str | None = "drie",
+    q: Annotated[
+        str | None,
+        Query(max_length=9)
+    ] = None,
+):
+    results = {"jour": "dag"}
+
+    if bonjour:
+        results.update({"bonjour": bonjour})
+    if trois:
+        results.update({"trois": trois})
+    if q:
+        results.update({"q": q})
+
+    return results
